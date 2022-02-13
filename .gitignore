@@ -1,0 +1,10 @@
+node_modules 
+dist
+lib
+coverage
+
+readm-sample.md
+
+yarn-error.log
+src/Test/.cache
+.cache
