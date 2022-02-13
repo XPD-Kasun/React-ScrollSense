@@ -6,7 +6,7 @@ import path from 'path';
 export default {
 	input:  ['./src/index.js', './src/io/index.js'],
 	external: ['lodash'],
-	output: [ {
+	output: [  {
 			dir: 'dist',
 			format: 'es',
 			plugins: [terser()]
