@@ -1,6 +1,6 @@
 import React from "react";
-import { info, warn } from "../Shared/log";
-import { isRafAvailable } from "../Shared/modernizer";
+import { info, warn } from "../shared/log";
+import { isRafAvailable } from "../shared/modernizer";
 import { ScrollContextNativeScroll } from "./ScrollSense";
 
 /**

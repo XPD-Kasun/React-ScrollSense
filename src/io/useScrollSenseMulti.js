@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { isRafAvailable } from '../Shared/modernizer';
+import { isRafAvailable } from '../shared/modernizer';
 import { ScrollContextIntersectionObserver } from './ScrollSense';
 
 /**

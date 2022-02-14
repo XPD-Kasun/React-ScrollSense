@@ -1,7 +1,7 @@
 import { useContext } from 'react';
-import errorStrings from '../Shared/errorStrings';
-import { error } from '../Shared/log';
-import { isRafAvailable } from '../Shared/modernizer';
+import errorStrings from '../shared/errorStrings';
+import { error } from '../shared/log';
+import { isRafAvailable } from '../shared/modernizer';
 import { ScrollContextNativeScroll } from './ScrollSense';
 
 /**

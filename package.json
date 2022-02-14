@@ -14,7 +14,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/XPD-Kasun/ReactScrollSensor.git"
+        "url": "git+https://github.com/XPD-Kasun/React-ScrollSensor.git"
     },
     "keywords": [
         "React",
@@ -30,9 +30,9 @@
     "author": "XPD::Kasun",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/XPD-Kasun/ReactScrollSensor/issues"
+        "url": "https://github.com/XPD-Kasun/React-ScrollSensor/issues"
     },
-    "homepage": "https://github.com/XPD-Kasun/ReactScrollSensor#readme",
+    "homepage": "https://github.com/XPD-Kasun/React-ScrollSensor#readme",
     "devDependencies": {
         "@babel/cli": "^7.8.4",
         "@babel/core": "^7.9.6",
