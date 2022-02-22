@@ -10,8 +10,7 @@ export default {
 		{
 			dir: 'dist',
 			format: 'es',
-			//sourcemap: true,
-			plugins: [terser()],
+			sourcemap: true,
 			chunkFileNames: (chunkInfo) => {
 				console.log(chunkInfo.name)
 				return 'pack.[hash].js';

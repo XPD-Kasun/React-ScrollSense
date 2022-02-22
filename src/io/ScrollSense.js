@@ -295,16 +295,24 @@ class ScrollSense extends React.Component {
 		}
 
 	}
+
+	constructor(props) {
+		super(props);
+
+		this.addTrackingFn = this.addTrackingFn.bind(this);
+		this.addPerComponentFn = this.addPerComponentFn.bind(this);
+		this.replaceComponentFn = this.replaceComponentFn.bind(this);
+		this.removeTrackingFn = this.removeTrackingFn.bind(this);
+	}
 	
 
 	render() {
-		let self = this;
 
 		let val = {
-			addToSingleio: self.addTrackingFn.bind(self),
-			addToMultipleio: self.addPerComponentFn.bind(self),
-			updateMultipleio: self.replaceComponentFn.bind(self),
-			removeTracking: self.removeTrackingFn.bind(self),
+			addToSingleio: this.addTrackingFn,
+			addToMultipleio: this.addPerComponentFn,
+			updateMultipleio: this.replaceComponentFn,
+			removeTracking: this.removeTrackingFn,
 			sensorType: 'io'
 		};
 

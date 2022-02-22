@@ -43,6 +43,8 @@ class ScrollSense extends React.Component {
 		this.onResize = this.onResize.bind(this);
 		this.onViewportChange = this.onViewportChange.bind(this);
 		this.addTrackingFn = this.addTrackingFn.bind(this);
+		this.removeTracking = this.removeTracking.bind(this);
+		this.updateTrackingFn = this.updateTrackingFn.bind(this);
 
 		this.wndHeight = window.innerHeight;
 		this.wndWidth = window.innerWidth;
@@ -333,7 +335,8 @@ class ScrollSense extends React.Component {
 
 						item.isShowing = false;
 						item.fn({
-							isIntersecting: false
+							isIntersecting: false,
+							target: item.el
 						})
 					}
 				}
@@ -411,7 +414,8 @@ class ScrollSense extends React.Component {
 
 					item.isShowing = false;
 					item.fn({
-						isIntersecting: false
+						isIntersecting: false,
+						target: item.el
 					})
 				}
 

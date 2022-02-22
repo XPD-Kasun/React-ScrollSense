@@ -1,5 +1,5 @@
 {
-    "name": "react-scrollsense",
+    "name": "react-scrollsense",    
     "version": "1.0.3-alpha.0",
     "description": "A scroll sensor to solve your react scroll into viewport issues. ",
     "main": "dist/index.js",
@@ -10,7 +10,8 @@
     "scripts": {
         "test-jest": "jest",
         "test-e2e": "wdio run ./wdio.conf.js",
-        "build": "rollup -c",
+        "build": "rollup --config rollup.config.js",
+        "build-dev": "rollup --config rollup.dev.js",
         "wdio": "wdio run wdio.conf.js"
     },
     "files": [
