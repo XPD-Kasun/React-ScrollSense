@@ -1,4 +1,5 @@
 import ScrollSense from 'react-scrollsense';
+import MyAwesomeComponent from './MyAwesomeComponent';
 import ScrollBoxAdv from './ScrollBoxAdv';
 
 function SpecificRendering() {
@@ -8,6 +9,7 @@ function SpecificRendering() {
                      <ScrollSense  config={{threshold: '200px'}}>
                             <div className="big-box"></div>
                             <ScrollBoxAdv></ScrollBoxAdv>
+                            <MyAwesomeComponent></MyAwesomeComponent>
                      </ScrollSense>
               </div>
        );

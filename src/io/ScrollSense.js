@@ -195,7 +195,7 @@ class ScrollSense extends React.Component {
 
 		var options = this.buildOptions(el, config);
 		let io = new IntersectionObserver(fn, options);
-		console.log('Addpercomponent with config ', options, el);
+		// console.log('Addpercomponent with config ', options, el);
 
 		io.observe(el);
 

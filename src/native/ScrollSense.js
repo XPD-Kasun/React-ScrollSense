@@ -109,14 +109,14 @@ class ScrollSense extends React.Component {
 			trackingOptions = options;
 		}
 
-		if (trackingOptions.continous === undefined) {
-			trackingOptions.continous = true;
+		if (trackingOptions.continuous === undefined) {
+			trackingOptions.continuous = true;
 		}
-		if (!trackingOptions.continous) {
-			trackingOptions.continous = false;
+		if (!trackingOptions.continuous) {
+			trackingOptions.continuous = false;
 		}
 		else {
-			trackingOptions.continous = true;
+			trackingOptions.continuous = true;
 		}
 
 
@@ -156,7 +156,7 @@ class ScrollSense extends React.Component {
 					isActive: true,
 					isScrollContainer: true,
 					isTriggered: false,
-					continous: trackingOptions.continous
+					continuous: trackingOptions.continuous
 				};
 				this.scrollEntryItems[this.i] = scrollItem;
 				this.i++;
@@ -185,7 +185,7 @@ class ScrollSense extends React.Component {
 			overflowParent,
 			isActive: true,
 			isTriggered: false,
-			continous: trackingOptions.continous
+			continuous: trackingOptions.continuous
 			// scrollTop: (overflowParent) ? overflowParent.scrollTop : this.getScrollTop(),
 			// scrollLeft: (overflowParent) ? overflowParent.scrollLeft : this.getScrollLeft()
 		};
@@ -273,7 +273,7 @@ class ScrollSense extends React.Component {
 			for (let i = 0; i < this.scrollEntryItems.length; i++) {
 				const item = this.scrollEntryItems[i];
 
-				if (!(item.continous || !item.isTriggered || item.isScrollContainer)) {
+				if (!(item.continuous || !item.isTriggered || item.isScrollContainer)) {
 					continue;
 				}
 
@@ -351,7 +351,7 @@ class ScrollSense extends React.Component {
 			for (let i = 0; i < this.scrollEntryItems.length; i++) {
 				const item = this.scrollEntryItems[i];
 
-				if (!item.continous && item.isTriggered) {
+				if (!item.continuous && item.isTriggered) {
 					continue;
 				}
 

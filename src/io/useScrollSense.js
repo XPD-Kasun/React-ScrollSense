@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import errorStrings from '../shared/errorStrings';
 import { error } from '../shared/log';
 import { isRafAvailable } from '../shared/modernizer';
@@ -10,69 +10,74 @@ import { ScrollContextIntersectionObserver } from './ScrollSense';
 
 const rafAvailable = isRafAvailable();
 
-function useScrollSense(useMultipleIOs = false) {
+function useScrollSense(useMultipleIOs = true) {
 
        const scrollSense = useContext(ScrollContextIntersectionObserver);
-       if(scrollSense && scrollSense.sensorType !== 'io') {
+       if (scrollSense && scrollSense.sensorType !== 'io') {
               error(errorStrings.ioConnectUseWrongProvider);
        }
 
-       return {
-              onIntersection: (el, fn, options) => {
+       const sensorEndpoint = useMemo(() => {
 
-                     if(!scrollSense) {
-                            console.log('no scroll provider');
-                            return;
-                     }
+              return {
+                     onIntersection: (el, fn, options) => {
 
-                     let ioActions = null;
+                            if (!scrollSense) {
+                                   error(errorStrings.noScrollProvider);
+                                   return;
+                            }
 
-                     if (useMultipleIOs) {
+                            let ioActions = null;
 
-                            ioActions = scrollSense.addToMultipleio(el, (ioEntry) => {
+                            if (useMultipleIOs) {
 
-                                   ioEntry.forEach((entry) => {
+                                   ioActions = scrollSense.addToMultipleio(el, (ioEntry) => {
+
+                                          ioEntry.forEach((entry) => {
+                                                 if (rafAvailable) {
+                                                        window.requestAnimationFrame((time) => {
+                                                               fn(entry, el, time);
+                                                        })
+                                                        return;
+                                                 }
+                                                 else {
+                                                        fn(entry, el);
+                                                 }
+
+
+                                          });
+
+                                   }, options);
+                            }
+                            else {
+
+                                   ioActions = scrollSense.addToSingleio(el, (scrollInfo) => {
+
                                           if (rafAvailable) {
                                                  window.requestAnimationFrame((time) => {
-                                                        fn(entry, el, time);
+                                                        fn(scrollInfo, el, time);
                                                  })
                                                  return;
                                           }
                                           else {
-                                                 fn(entry, el);
+                                                 fn(scrollInfo, el);
                                           }
 
+                                   }, options);
+                            };
 
-                                   });
+                            return ioActions;
+                     },
+                     detach: (el) => {
 
-                            }, options);
+                            scrollSense.removeTracking(el, useMultipleIOs)
+
                      }
-                     else {
-                            
-                            ioActions = scrollSense.addToSingleio(el, (scrollInfo) => {
-
-                                   console.log('s', scrollInfo);
-                                   if (rafAvailable) {
-                                          window.requestAnimationFrame((time) => {
-                                                 fn(scrollInfo, el, time);
-                                          })
-                                          return;
-                                   }
-                                   else {
-                                          fn(scrollInfo, el);
-                                   }
-       
-                            }, options);
-                     };
-
-                     return ioActions;
-              },
-              detach: (el) => {
-
-                     scrollSense.removeTracking(el, useMultipleIOs)
-
               }
-       }
+
+       }, []);
+
+       return sensorEndpoint;
 
 }
 
