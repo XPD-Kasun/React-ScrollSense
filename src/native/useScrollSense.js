@@ -22,6 +22,11 @@ function useScrollSense() {
 			const ioActions = scrollSense.addTracking(el, fn, options);
 
 			return ioActions;
+		},
+		detach: (el) => {
+
+			scrollSense.removeTracking(el);
+
 		}
 	}
 

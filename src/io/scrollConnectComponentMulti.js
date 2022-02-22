@@ -1,5 +1,5 @@
 import React from "react";
-import { info, warn } from "../Shared/log";
+import { info, warn } from "../shared/log";
 import { ScrollContextIntersectionObserver } from "./ScrollSense";
 
 function scrollConnectComponentMulti(Component, mapProps, options) {

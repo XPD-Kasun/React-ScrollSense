@@ -1,8 +1,12 @@
 {
-    "name": "react-scrollsensor",
-    "version": "1.0.0",
+    "name": "react-scrollsense",
+    "version": "1.0.2",
     "description": "A scroll sensor to solve your react scroll into viewport issues. ",
-    "main": "./lib/index.js",
+    "main": "dist/index.js",
+    "exports":{
+        ".": "./dist/index.js",
+        "./io": "./dist/io/index.js"
+    },
     "scripts": {
         "test-jest": "jest",
         "test-e2e": "wdio run ./wdio.conf.js",
@@ -14,7 +18,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/XPD-Kasun/React-ScrollSensor.git"
+        "url": "git+https://github.com/XPD-Kasun/React-ScrollSense.git"
     },
     "keywords": [
         "React",
@@ -30,9 +34,9 @@
     "author": "XPD::Kasun",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/XPD-Kasun/React-ScrollSensor/issues"
+        "url": "https://github.com/XPD-Kasun/React-ScrollSense/issues"
     },
-    "homepage": "https://github.com/XPD-Kasun/React-ScrollSensor#readme",
+    "homepage": "https://github.com/XPD-Kasun/React-ScrollSense#readme",
     "devDependencies": {
         "@babel/cli": "^7.8.4",
         "@babel/core": "^7.9.6",
@@ -64,11 +68,13 @@
         "typescript": "^4.5.5",
         "wdio-chromedriver-service": "^7.2.6"
     },
+    "dependencies": {        
+        "lodash": "^4.17.15"
+    },
     "peerDependencies": {
         "@types/node": "^17.0.13",
         "@types/react": "^17.0.38",
         "@types/react-dom": "^17.0.11",
-        "lodash": "^4.17.15",
         "prop-types": "^15.8.1",
         "react": "^17.0.0",
         "react-dom": "^17.0.0"

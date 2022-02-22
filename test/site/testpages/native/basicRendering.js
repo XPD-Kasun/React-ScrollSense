@@ -1,4 +1,4 @@
-import ScrollSense from '../../../../src';
+import ScrollSense from 'react-scrollsense';
 import ScrollBox from './ScrollBox';
 
 function BasicRendering() {

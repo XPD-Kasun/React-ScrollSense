@@ -1,7 +1,5 @@
-import _ from "lodash";
-
 const { useEffect, useRef, useState } = require("react");
-const { useScrollSense } = require("../../../../src")
+const { useScrollSense } = require("react-scrollsense")
 
 function ScrollBox() {
 
@@ -13,13 +11,15 @@ function ScrollBox() {
 
               sensor.onIntersection(scrollRef.current, (ioEntry, el, time) => {
 
-                     if(ioEntry.isIntersecting) {
+                     if (ioEntry.isIntersecting) {
                             setScrollBoxCls('scroll-box intersecting');
                      }
                      else {
                             setScrollBoxCls('scroll-box');
                      }
 
+              }, {
+                     rootBound: [0, 100, 0, 0]
               });
 
        }, []);

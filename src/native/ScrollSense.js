@@ -1,8 +1,8 @@
-import _ from "lodash";
+import { isElement, throttle } from "lodash";
 import React from "react";
-import { warn } from "../Shared/log";
-import '../Shared/polyfills';
-import { parseDelay, parseRootMargin } from '../Shared/unitParser';
+import { warn } from "../shared/log";
+import '../shared/polyfills';
+import { parseDelay, parseRootMargin } from '../shared/unitParser';
 
 
 function isNumeric(n) {
@@ -38,7 +38,7 @@ class ScrollSense extends React.Component {
 		super(props);
 		this.setOptions();
 
-		this.onScroll = _.throttle(this.onScroll.bind(this), this.options.delay);
+		this.onScroll = throttle(this.onScroll.bind(this), this.options.delay);
 		this.handleScroll = this.handleScroll.bind(this);
 		this.onResize = this.onResize.bind(this);
 		this.onViewportChange = this.onViewportChange.bind(this);
@@ -110,7 +110,7 @@ class ScrollSense extends React.Component {
 		if (trackingOptions.continous === undefined) {
 			trackingOptions.continous = true;
 		}
-		if(!trackingOptions.continous) {
+		if (!trackingOptions.continous) {
 			trackingOptions.continous = false;
 		}
 		else {
@@ -235,6 +235,25 @@ class ScrollSense extends React.Component {
 
 	}
 
+	removeTracking(el) {
+
+		if (isElement(el)) {
+
+			for (let i = 0; i < this.scrollEntryItems.length; i++) {
+				const scrollItem = this.scrollEntryItems[i];
+				if (scrollItem.el == el) {
+
+					this.scrollEntryItems.splice(i, 1);
+					return;
+
+				}
+
+			}
+
+		}
+
+
+	}
 
 	//https://stackoverflow.com/a/20478983/2260920
 	getScrollTop() {
@@ -252,7 +271,7 @@ class ScrollSense extends React.Component {
 			for (let i = 0; i < this.scrollEntryItems.length; i++) {
 				const item = this.scrollEntryItems[i];
 
-				if(!(item.continous || !item.isTriggered || item.isScrollContainer)) {
+				if (!(item.continous || !item.isTriggered || item.isScrollContainer)) {
 					continue;
 				}
 
@@ -329,7 +348,7 @@ class ScrollSense extends React.Component {
 			for (let i = 0; i < this.scrollEntryItems.length; i++) {
 				const item = this.scrollEntryItems[i];
 
-				if(!item.continous && item.isTriggered) {
+				if (!item.continous && item.isTriggered) {
 					continue;
 				}
 
@@ -442,6 +461,7 @@ class ScrollSense extends React.Component {
 		let val = {
 			addTracking: this.addTrackingFn,
 			updateTracking: this.updateTrackingFn,
+			removeTracking: this.removeTracking,
 			sensorType: 'native'
 		};
 

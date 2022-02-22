@@ -1,6 +1,6 @@
 import React from "react";
-import { warn } from "../Shared/log";
-import { isRafAvailable } from "../Shared/modernizer";
+import { warn } from "../shared/log";
+import { isRafAvailable } from "../shared/modernizer";
 import { ScrollContextIntersectionObserver } from "./ScrollSense";
 
 function scrollConnectPropSingle(Component) {

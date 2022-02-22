@@ -1,16 +1,16 @@
-import ScrollSense from 'react-scrollsense/io';
-import ScrollBox from './ScrollBox';
+import ScrollSense from 'react-scrollsense';
+import ScrollBoxAdv from './ScrollBoxAdv';
 
-function BasicRendering() {
+function SpecificRendering() {
 
        return (
               <div>
                      <ScrollSense  config={{threshold: '200px'}}>
                             <div className="big-box"></div>
-                            <ScrollBox></ScrollBox>
+                            <ScrollBoxAdv></ScrollBoxAdv>
                      </ScrollSense>
               </div>
        );
 }
 
-export default BasicRendering;
+export default SpecificRendering;

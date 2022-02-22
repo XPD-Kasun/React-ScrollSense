@@ -1,14 +1,21 @@
 import { useEffect, useRef } from 'react';
 import { useScrollSense } from 'react-scrollsense/io';
 
-function ScrollBox({ height }) {
+function ScrollBoxAdv({ height }) {
 
        let scrollBoxRef = useRef();
-       let ioActions = useScrollSense(true);
+       let sensor = useScrollSense(true);
+
+       const onBtnClick = () => {
+
+              sensor.detach(scrollBoxRef.current);
+
+       };
+
 
        useEffect(() => {
 
-              ioActions.onIntersection(scrollBoxRef.current, (ioEntry, el, time) => {
+              sensor.onIntersection(scrollBoxRef.current, (ioEntry, el, time) => {
 
                      if (ioEntry.isIntersecting) {
                             el.style.backgroundColor = '#00ff00';
@@ -18,14 +25,18 @@ function ScrollBox({ height }) {
                      }
 
               });
-       }, []);
+
+              return () => sensor.detach(scrollBoxRef.current);
+
+       }, [sensor]);
 
 
        return (
               <div ref={scrollBoxRef} className="scroll-box">
+                     <button onClick={onBtnClick} className="btn">Some button</button>
                      Scroller
               </div>
        )
 };
 
-export default ScrollBox;
+export default ScrollBoxAdv;

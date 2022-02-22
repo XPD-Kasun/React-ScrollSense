@@ -1,6 +1,6 @@
 import React from "react";
 import propTypes from 'prop-types';
-import { error, warn } from '../Shared/log';
+import { error, warn } from '../shared/log';
 //Single Intersection Observer.
 const ScrollContextIntersectionObserver = React.createContext();
 ScrollContextIntersectionObserver.displayName = 'ScrollSenseIO';
@@ -274,6 +274,29 @@ class ScrollSense extends React.Component {
 		io.observe(el);
 	}
 
+	removeTrackingFn(el, isMultiple) {
+
+		if(isMultiple) {
+
+			for (let i = 0; i < this.perComponentIOArray.length; i++) {
+				const item = this.perComponentIOArray[i];
+				if(item.el === el) {
+					item.io.unobserve(el);
+					this.perComponentIOArray.splice(i, 1);
+					return;
+				}
+			}
+
+		}
+		else {
+
+			this.io.unobserve(el);
+
+		}
+
+	}
+	
+
 	render() {
 		let self = this;
 
@@ -281,6 +304,7 @@ class ScrollSense extends React.Component {
 			addToSingleio: self.addTrackingFn.bind(self),
 			addToMultipleio: self.addPerComponentFn.bind(self),
 			updateMultipleio: self.replaceComponentFn.bind(self),
+			removeTracking: self.removeTrackingFn.bind(self),
 			sensorType: 'io'
 		};
 

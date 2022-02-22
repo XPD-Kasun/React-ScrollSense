@@ -4,17 +4,27 @@ import multiInput from 'rollup-plugin-multi-input';
 import path from 'path';
 
 export default {
-	input:  ['./src/index.js', './src/io/index.js'],
+	input: ['./src/index.js', './src/io/index.js'],
 	external: ['lodash'],
-	output: [  {
+	output: [
+		{
 			dir: 'dist',
 			format: 'es',
-			plugins: [terser()]
-		},],
+			plugins: [terser()],
+			chunkFileNames: (chunkInfo) => {
+				console.log(chunkInfo.name)
+				return 'pack.[hash].js';
+			}
+		}
+	],
 	plugins: [
 		babel({ babelHelpers: 'bundled' }),
-		multiInput({ 
-			relative: 'src/'
+		multiInput({
+			relative: 'src/',
+			transformOutputPath: (output, input) => {
+				console.log(output, input);
+				return output;
+			},
 		})
 	]
 }

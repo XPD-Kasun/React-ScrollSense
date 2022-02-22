@@ -63,9 +63,14 @@ function useScrollSense(useMultipleIOs = false) {
                                    }
        
                             }, options);
-                     }                    
+                     };
 
                      return ioActions;
+              },
+              detach: (el) => {
+
+                     scrollSense.removeTracking(el, useMultipleIOs)
+
               }
        }
 
