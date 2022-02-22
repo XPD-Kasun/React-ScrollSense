@@ -1,6 +1,7 @@
 import { terser } from 'rollup-plugin-terser';
 import babel from '@rollup/plugin-babel';
 import multiInput from 'rollup-plugin-multi-input';
+import del from 'rollup-plugin-delete'
 import path from 'path';
 
 export default {
@@ -20,6 +21,7 @@ export default {
 	],
 	plugins: [
 		babel({ babelHelpers: 'bundled' }),
+		del({ targets: 'dist/*' }),
 		multiInput({
 			relative: 'src/',
 			transformOutputPath: (output, input) => {
