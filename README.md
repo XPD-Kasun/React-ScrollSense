@@ -68,10 +68,10 @@ function MyAwesomeComponent() {
 
      useEffect(() => {
 
-          let tracker = sensor.onIntersection(ref.current, (entry, el) => {
+          sensor.onIntersection(ref.current, (entry, el) => {
 
                if(entry.isIntersecting) {
-                    // Now its on screen let's change class
+                    // Now its on the screen. Do whatever you want.
                     setCls('my-component scrolled');
                }
                else {
@@ -81,9 +81,9 @@ function MyAwesomeComponent() {
 
           });
 
-          return () => { sensor.detach(tracker)}
+          return () => { sensor.detach(ref.current); }
 
-     }, []);
+     }, [sensor]);
 
      return (
           <div className={cls} ref={ref}>
