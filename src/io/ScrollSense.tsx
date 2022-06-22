@@ -1,8 +1,19 @@
 import React from "react";
 import propTypes from 'prop-types';
 import { error, warn } from '../shared/log';
+import errorStrings from "../shared/errorStrings";
 //Single Intersection Observer.
-const ScrollContextIntersectionObserver = React.createContext();
+
+type IOScrollContext = {
+	addToSingleio: (el, fn, options) => SensorProxy,
+	addToMultipleio: (el, fn, config) => SensorProxy,
+	updateMultipleio: (el, fn, options) => null,
+	removeTracking: (el, isMultiple) => void,
+	sensorType: 'io'
+}
+
+
+const ScrollContextIntersectionObserver = React.createContext<IOScrollContext>(null);
 ScrollContextIntersectionObserver.displayName = 'ScrollSenseIO';
 
 function isNumeric(n) {
@@ -32,7 +43,8 @@ const thresholdSetToValues = function (threshold) {
 			return val;
 		}
 		if ((index = threahold.indexOf('px')) > -1) {
-			error('Cannot specify px for threshold of Scroll Sense, since many dom elements shares the single intersection observer in this mode');			
+			error(errorStrings.noPixelsForSingleIOThreshold);
+			return 0.5;
 		}
 
 		return t
@@ -75,10 +87,30 @@ const thresholdForMulti = function (threshold, el) {
 
 }
 
-class ScrollSense extends React.Component {
+type ScrollSensePropType = {
+	config: {
+		threshold: number,
+		root: HTMLElement,
+		rootMargin: string
+	}
+};
+
+type ScrollSenseStateType = {
+	refreshToggle: boolean
+};
+
+class ScrollSense extends React.Component<ScrollSensePropType, ScrollSenseStateType> {
 	callbackfns = {};
 	io = null;
 	perComponentIOArray = [];
+
+	static propTypes = {
+		config: propTypes.shape({
+			threshold: propTypes.oneOfType([propTypes.number, propTypes.string]),
+			root: propTypes.instanceOf(HTMLElement),
+			rootMargin: propTypes.oneOfType([propTypes.string, propTypes.array])
+		})
+	};
 
 
 	onContentVisible(entries, observer) {
@@ -128,17 +160,14 @@ class ScrollSense extends React.Component {
 
 	replaceComponentFn(el, fn, config) {
 
-		console.log('replaceComponentFn with config ', config, el);
 		for (let i = 0; i < this.perComponentIOArray.length; i++) {
 			const ioItem = this.perComponentIOArray[i];
 			if (ioItem.el == el) {
 				let io = ioItem.io;
 				io.unobserve(el);
 				io.disconnect();
-				console.log('replaced');
 				var options = this.buildOptions(el, config);
 				io = new IntersectionObserver(fn, options);
-				console.log('Addpercomponent with config ', options, el);
 				ioItem.io = io;
 				io.observe(el);
 
@@ -154,9 +183,6 @@ class ScrollSense extends React.Component {
 
 			}
 		}
-
-		warn('No intersection observer instance found for the given element ', el);
-
 
 	}
 
@@ -185,7 +211,7 @@ class ScrollSense extends React.Component {
 
 		let scrollId = el.getAttribute('data-scroll-id');
 		if (isNumeric(scrollId)) {
-			console.warn("cannot attach scroller since already exists a handler");
+			warn("cannot attach scroller since already exists a handler");
 			return;
 		}
 		el.setAttribute('data-scroll-id', this.i);
@@ -217,7 +243,7 @@ class ScrollSense extends React.Component {
 		return ioActions;
 	}
 
-	addTrackingFn(el, fn) {
+	addTrackingFn(el, fn): SensorProxy {
 		let scrollId = el.getAttribute('data-scroll-id');
 		if (isNumeric(scrollId)) {
 			console.warn("cannot attach scroller since already exists a handler");
@@ -276,11 +302,11 @@ class ScrollSense extends React.Component {
 
 	removeTrackingFn(el, isMultiple) {
 
-		if(isMultiple) {
+		if (isMultiple) {
 
 			for (let i = 0; i < this.perComponentIOArray.length; i++) {
 				const item = this.perComponentIOArray[i];
-				if(item.el === el) {
+				if (item.el === el) {
 					item.io.unobserve(el);
 					this.perComponentIOArray.splice(i, 1);
 					return;
@@ -304,11 +330,11 @@ class ScrollSense extends React.Component {
 		this.replaceComponentFn = this.replaceComponentFn.bind(this);
 		this.removeTrackingFn = this.removeTrackingFn.bind(this);
 	}
-	
+
 
 	render() {
 
-		let val = {
+		let val: IOScrollContext = {
 			addToSingleio: this.addTrackingFn,
 			addToMultipleio: this.addPerComponentFn,
 			updateMultipleio: this.replaceComponentFn,
@@ -323,15 +349,6 @@ class ScrollSense extends React.Component {
 		);
 	}
 }
-
-
-ScrollSense.propTypes = {
-	config: propTypes.shape({
-		threshold: propTypes.oneOfType([propTypes.number, propTypes.string]),
-		root: propTypes.instanceOf(HTMLElement),
-		rootMargin: propTypes.oneOfType([propTypes.string, propTypes.array])
-	})
-};
 
 export { ScrollContextIntersectionObserver };
 export default ScrollSense;

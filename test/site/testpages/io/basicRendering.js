@@ -5,7 +5,7 @@ function BasicRendering() {
 
        return (
               <div>
-                     <ScrollSense  config={{threshold: '200px'}}>
+                     <ScrollSense  config={{threshold: '10px'}}>
                             <div className="big-box"></div>
                             <ScrollBox></ScrollBox>
                      </ScrollSense>

@@ -15,9 +15,10 @@ body{
 .scroll-box{
        margin:20px;
        border-radius: 10px;
+       box-sizing: border-box;
        color: white;
        font-size: 30px;
-       min-height: 300px;
+       height: 300px;
        padding: 8px;
        background-color: #7a7a7a;
 }

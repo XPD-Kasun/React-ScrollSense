@@ -1,11 +1,12 @@
 import { terser } from 'rollup-plugin-terser';
 import babel from '@rollup/plugin-babel';
 import multiInput from 'rollup-plugin-multi-input';
-import del from 'rollup-plugin-delete'
+import del from 'rollup-plugin-delete';
+import typescript from '@rollup/plugin-typescript';
 import path from 'path';
 
 export default {
-	input: ['./src/index.js', './src/io/index.js'],
+	input: ['./src/index.ts', './src/io/index.ts', './src/helpers/index.ts'],
 	external: ['lodash'],
 	output: [
 		{
@@ -20,7 +21,6 @@ export default {
 		}
 	],
 	plugins: [
-		babel({ babelHelpers: 'bundled' }),
 		del({ targets: 'dist/*' }),
 		multiInput({
 			relative: 'src/',
@@ -28,6 +28,7 @@ export default {
 				console.log(output, input);
 				return output;
 			},
-		})
+		}),
+		typescript(),
 	]
 }

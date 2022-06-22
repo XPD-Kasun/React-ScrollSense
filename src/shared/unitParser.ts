@@ -7,7 +7,12 @@ if (!String.prototype.endsWith) {
 
 export function parseDelay(delayLiteral) {
 
+	if (typeof (delayLiteral) == 'number') {
+		return delayLiteral;
+	}
+	
 	delayLiteral = delayLiteral.trim();
+
 	if (delayLiteral.endsWith('ms')) {
 		return parseInt(delayLiteral.substring(0, delayLiteral.indexOf('ms')));
 	}
@@ -16,13 +21,17 @@ export function parseDelay(delayLiteral) {
 	}
 }
 
-export function parseRootMargin(rootMargin) {
+function parseType(input): string {
+	return input.endsWith('%') ? 'percentage' : 'pixel'
+}
+
+export function parseRootMargin(rootMargin): ParsedRootMargin {
 
 	var items = rootMargin.trim().split(' ');
 	if (items.length == 1) {
 		var value = parseInt(items[0]);
 		return {
-			type: items[0].endsWith('%') ? 'percentage' : 'pixel',
+			type: new Array<string>(4).fill(parseType(items[0])),
 			margin: [value, value, value, value]
 		}
 	}
@@ -31,16 +40,27 @@ export function parseRootMargin(rootMargin) {
 		var y = parseInt(items[0]);
 
 		return {
-			type: items[0].endsWith('%') ? 'percentage' : 'pixel',
+			type: [parseType(y), parseType(x), parseType(y), parseType(x)],
 			margin: [y, x, y, x]
 		}
 	}
-	if(items.length== 4){
+	if (items.length == 4) {
 		return {
-			type: items[0].endsWith('%') ? 'percentage' : 'pixel',
+			type: [parseType(items[0]), parseType(items[1]), parseType(items[2]), parseType(items[3])],
 			margin: [parseInt(items[0]), parseInt(items[1]), parseInt(items[2]), parseInt(items[3])]
 		}
 	}
 
 	return null;
+}
+
+export function getLengthForType(type: string, marginValue: number, rootLength: number) {
+
+	if(type === 'pixel') {
+		return marginValue;
+	}
+	else {
+		return marginValue * rootLength /100;
+	}
+	
 }

@@ -4,7 +4,7 @@ import { useScrollSense } from 'react-scrollsense/io';
 function ScrollBox({ height }) {
 
        let scrollBoxRef = useRef();
-       let ioActions = useScrollSense(true);
+       let ioActions = useScrollSense(false);
 
        useEffect(() => {
 
@@ -24,6 +24,7 @@ function ScrollBox({ height }) {
        return (
               <div ref={scrollBoxRef} className="scroll-box">
                      Scroller
+                     <div className="test"></div>
               </div>
        )
 };

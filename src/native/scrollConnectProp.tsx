@@ -8,9 +8,9 @@ import { ScrollContextNativeScroll } from "./ScrollSense";
  * @param {React.Component} Component Component to connect
  * @param {{root, threshold, rootMargin}} options Parameters to intersection observer
  */
-function scrollConnectProp(Component, options) {
+function scrollConnectProp(Component: React.ComponentType<any>, options: ConnectOptionsType) {
 
-	class ScrollConnected extends React.Component {
+	class ScrollConnected extends React.Component<ScrollConnectedPropType, ScrollConnectedStateType> {
 		static contextType = ScrollContextNativeScroll;
 		isComplete = false;
 		isRafAvailable = isRafAvailable();
@@ -59,11 +59,11 @@ function scrollConnectProp(Component, options) {
 					}
 				});
 
-				const ioActions = this.context.addTracking(el, fn, {
+				const sensorProxy = this.context.addTracking(el, fn, {
 					rootMargin: this.config.rootMargin
 				});
 
-				return ioActions;
+				return sensorProxy;
 			}
 			else {
 				warn('There is no dom element to attach the scroll sense');
@@ -79,9 +79,9 @@ function scrollConnectProp(Component, options) {
 			for (let i = 0; i < this.ioRecords.length; i++) {
 				const ioRecord = this.ioRecords[i];
 
-				this.context.updateTracking(ioRecord.el, fn, {
+				this.context.updateTracking(ioRecord.el, null, {
 					rootMargin: ioRecord.flags.isRootMarginSet ? ioRecord.config.rootMargin : (ioRecord.config.rootMargin = rootMargin)
-				})
+				});
 
 
 			}

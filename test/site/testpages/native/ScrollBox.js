@@ -1,5 +1,6 @@
 const { useEffect, useRef, useState } = require("react");
 const { useScrollSense } = require("react-scrollsense")
+import { getVisibleHeight } from 'react-scrollsense/helpers';
 
 function ScrollBox() {
 
@@ -9,10 +10,14 @@ function ScrollBox() {
 
        useEffect(() => {
 
-              sensor.onIntersection(scrollRef.current, (ioEntry, el, time) => {
+              sensor.onIntersection(scrollRef.current, (ioEntry) => {
 
                      if (ioEntry.isIntersecting) {
                             setScrollBoxCls('scroll-box intersecting');
+                            let testEl = ioEntry.target.getElementsByClassName('test')[0];
+                            if(testEl) {
+                                   testEl.innerText = getVisibleHeight(ioEntry);
+                            }
                      }
                      else {
                             setScrollBoxCls('scroll-box');
@@ -27,6 +32,7 @@ function ScrollBox() {
        return (
               <div ref={scrollRef} className={scrollBoxCls}>
                      Scroller
+                     <div className="test"></div>
               </div>
        )
 }

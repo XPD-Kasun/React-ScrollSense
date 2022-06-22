@@ -13,8 +13,12 @@ const rafAvailable = isRafAvailable();
 function useScrollSense(useMultipleIOs = true) {
 
        const scrollSense = useContext(ScrollContextIntersectionObserver);
+       
+	if(!scrollSense){
+		throw new Error('No intersection observer sensor has found. Did you add ScrollSense provider component?');
+	}
        if (scrollSense && scrollSense.sensorType !== 'io') {
-              error(errorStrings.ioConnectUseWrongProvider);
+              error(errorStrings.ioConnectWithWrongProvider);
        }
 
        const sensorEndpoint = useMemo(() => {
@@ -27,11 +31,11 @@ function useScrollSense(useMultipleIOs = true) {
                                    return;
                             }
 
-                            let ioActions = null;
+                            let sensorProxy = null;
 
                             if (useMultipleIOs) {
 
-                                   ioActions = scrollSense.addToMultipleio(el, (ioEntry) => {
+                                   sensorProxy = scrollSense.addToMultipleio(el, (ioEntry) => {
 
                                           ioEntry.forEach((entry) => {
                                                  if (rafAvailable) {
@@ -51,7 +55,7 @@ function useScrollSense(useMultipleIOs = true) {
                             }
                             else {
 
-                                   ioActions = scrollSense.addToSingleio(el, (scrollInfo) => {
+                                   sensorProxy = scrollSense.addToSingleio(el, (scrollInfo) => {
 
                                           if (rafAvailable) {
                                                  window.requestAnimationFrame((time) => {
@@ -66,7 +70,7 @@ function useScrollSense(useMultipleIOs = true) {
                                    }, options);
                             };
 
-                            return ioActions;
+                            return sensorProxy;
                      },
                      detach: (el) => {
 
@@ -75,7 +79,7 @@ function useScrollSense(useMultipleIOs = true) {
                      }
               }
 
-       }, []);
+       }, [scrollSense]);
 
        return sensorEndpoint;
 

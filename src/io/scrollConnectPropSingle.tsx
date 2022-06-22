@@ -3,9 +3,9 @@ import { warn } from "../shared/log";
 import { isRafAvailable } from "../shared/modernizer";
 import { ScrollContextIntersectionObserver } from "./ScrollSense";
 
-function scrollConnectPropSingle(Component) {
+function scrollConnectPropSingle(Component: React.ComponentType<any>) {
 
-	class ScrollConnectedSingle extends React.Component {
+	class ScrollConnectedSingle extends React.Component<ScrollConnectedPropType, ScrollConnectedStateType> {
 		static contextType = ScrollContextIntersectionObserver;
 
 		isRafAvailable = isRafAvailable();
@@ -22,8 +22,8 @@ function scrollConnectPropSingle(Component) {
 				return;
 			}
 
-			const ioActions = this.context.addToSingleio(el, (scrollInfo) => {
-				console.log('s', scrollInfo);
+			const sensorProxy = this.context.addToSingleio(el, (scrollInfo) => {
+				
 				if (this.isRafAvailable) {
 					window.requestAnimationFrame((time) => {
 						fn(scrollInfo, el, time);
@@ -36,7 +36,7 @@ function scrollConnectPropSingle(Component) {
 
 			});
 
-			return ioActions;
+			return sensorProxy;
 
 
 		}

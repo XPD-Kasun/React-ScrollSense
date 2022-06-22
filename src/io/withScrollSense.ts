@@ -3,12 +3,12 @@ import scrollConnectComponentSingle from "./scrollConnectComponentSingle";
 import scrollConnectPropMulti from "./scrollConnectPropMulti";
 import scrollConnectPropSingle from "./scrollConnectPropSingle";
 
-export default function withScrollSense() {
+export default function withScrollSense(Component) {
 
        return {
-              useCallback: function(Component, options, useMultipleIO = false) {
+              viaCallback: function (options: ConnectOptionsType, useMultipleIO = false) {
 
-                     if(useMultipleIO) {
+                     if (useMultipleIO) {
                             return scrollConnectPropMulti(Component, options);
                      }
                      else {
@@ -16,9 +16,13 @@ export default function withScrollSense() {
                      }
 
               },
-              useProps: function (Component, options, mapProps, useMultipleIO = false) {
+              viaProps: function (
+                     options: ConnectOptionsType,
+                     mapProps: (ScrollSensorEvent) => any,
+                     useMultipleIO = false
+              ) {
 
-                     if(useMultipleIO) {
+                     if (useMultipleIO) {
                             return scrollConnectComponentMulti(Component, mapProps, options);
                      }
                      else {

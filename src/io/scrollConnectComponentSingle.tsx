@@ -2,12 +2,12 @@ import React from "react";
 import { warn } from "../shared/log";
 import { ScrollContextIntersectionObserver } from "./ScrollSense";
 
-function scrollConnectComponentSingle(Component, mapProps) {
+function scrollConnectComponentSingle(Component: React.ComponentType<any>, mapProps: (ConnectOptionsType) => any) {
 	
-	class ScrollConnectedSingle extends React.Component {
+	class ScrollConnectedSingle extends React.Component<ScrollConnectedPropType, ScrollConnectedStateType>  {
 		static contextType = ScrollContextIntersectionObserver;
 
-		ref = React.createRef();
+		ref = React.createRef<HTMLDivElement>();
 		
 		constructor(props) {
 			super(props);
@@ -22,7 +22,7 @@ function scrollConnectComponentSingle(Component, mapProps) {
 				scrollInfo:  {
 					isIntersecting: false
 				},
-				ioActions: null
+				sensorProxy: null
 			}
 
 
@@ -33,7 +33,7 @@ function scrollConnectComponentSingle(Component, mapProps) {
 			let targetEl = this.ref.current.children[0];
 			if (targetEl) {
 
-				const ioActions = this.context.addToSingleio(targetEl, (scrollInfo) => {
+				const sensorProxy = this.context.addToSingleio(targetEl, (scrollInfo) => {
 					console.log('s', scrollInfo);
 					self.setState({
 						scrollInfo: scrollInfo
@@ -42,7 +42,7 @@ function scrollConnectComponentSingle(Component, mapProps) {
 
 				
 				this.setState({
-					ioActions: ioActions
+					sensorProxy: sensorProxy
 				});
 			}
 			else{
@@ -54,10 +54,9 @@ function scrollConnectComponentSingle(Component, mapProps) {
 			// let prop = this.getProp(this.context);
 			let prop = mapProps(this.state.scrollInfo);
 
-			console.log('rendera', this.props)
 			return (
 				<div ref={this.ref}>
-					<Component {...this.props} {...prop} {...this.state.ioActions} />
+					<Component {...this.props} {...prop} {...this.state.sensorProxy} />
 				</div>
 			);
 		}

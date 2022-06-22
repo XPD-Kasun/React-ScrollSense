@@ -10,6 +10,9 @@ import { ScrollContextNativeScroll } from './ScrollSense';
 function useScrollSense() {
 
 	const scrollSense = useContext(ScrollContextNativeScroll);
+	if(!scrollSense){
+		throw new Error('No event based sensor has found. Did you add ScrollSense provider component?')
+	}
 	if (scrollSense && scrollSense.sensorType !== 'native') {
 		error(errorStrings.nativeConnectWithWrongProvider);
 	}
@@ -18,8 +21,8 @@ function useScrollSense() {
 
 		return {
 			onIntersection: (el, fn, options) => {
-				const ioActions = scrollSense.addTracking(el, fn, options);
-				return ioActions;
+				const sensorProxy = scrollSense.addTracking(el, fn, options);
+				return sensorProxy;
 			},
 			detach: (el) => {
 
@@ -28,7 +31,7 @@ function useScrollSense() {
 			}
 		}
 
-	}, []);
+	}, [scrollSense]);
 
 	return sensorEndpoint;
 

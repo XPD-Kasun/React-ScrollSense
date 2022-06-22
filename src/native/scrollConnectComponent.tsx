@@ -1,10 +1,15 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { warn } from "../shared/log";
 import { ScrollContextNativeScroll } from "./ScrollSense";
 
-function scrollConnectComponent(Component, mapProps, options) {
 
-	class ScrollConnected extends React.Component {
+function scrollConnectComponent(
+	Component: React.ComponentType<any>,
+	mapProps: (ScrollSensorEvent) => any,
+	options: ConnectOptionsType
+) {
+
+	class ScrollConnected extends React.Component<ScrollConnectedPropType, ScrollConnectedStateType> {
 		static contextType = ScrollContextNativeScroll;
 
 		showTrue = {
@@ -15,33 +20,33 @@ function scrollConnectComponent(Component, mapProps, options) {
 			show: false
 		};
 
-		ref = React.createRef();
+		ref = React.createRef<HTMLDivElement>();
 
 		config = {
-			rootMargin: options? options.rootMargin || '0px 0px': '0px 0px'
+			rootMargin: options ? options.rootMargin || '0px 0px' : '0px 0px'
 		};
 
-		constructor(props) {
+		constructor(props: ScrollConnectedPropType) {
 			super(props);
 
 			this.state = {
-				scrollInfo:  {
+				scrollInfo: {
 					isIntersecting: false
 				},
-				ioActions: null
+				sensorProxy: null
 			};
 
-			if(props.rootMargin){
+			if (props.rootMargin) {
 				this.config.rootMargin = props.rootMargin;
 			}
-			
+
 		}
 
 		componentDidMount() {
 			let self = this;
 			let targetEl = this.ref.current.children[0];
 			if (targetEl) {
-				const ioActions = this.context.addTracking(targetEl, (scrollInfo) => {
+				const sensorProxy = this.context.addTracking(targetEl, (scrollInfo) => {
 					self.setState({
 						scrollInfo
 					})
@@ -50,32 +55,32 @@ function scrollConnectComponent(Component, mapProps, options) {
 				});
 
 				this.setState({
-					ioActions: ioActions
+					sensorProxy: sensorProxy
 				});
 			}
-			else{
+			else {
 				warn('There is no dom element to attach the scroll sense');
 			}
 		}
 
-		componentDidUpdate(prevProps){
+		componentDidUpdate(prevProps) {
 
 			let flag = false;
 
-			if(this.props.rootMargin != prevProps.rootMargin){
-				this.config.rootMargin  = this.props.rootMargin;
+			if (this.props.rootMargin != prevProps.rootMargin) {
+				this.config.rootMargin = this.props.rootMargin;
 				flag = true;
 			}
 
-			if(flag){
+			if (flag) {
 
-				this.context.updateTracking(this.ref.current.children[0], (scrollInfo)=>{
+				this.context.updateTracking(this.ref.current.children[0], (scrollInfo) => {
 
 					this.setState({
 						scrollInfo
 					})
 
-				},{
+				}, {
 					rootMargin: this.config.rootMargin
 				})
 
@@ -92,7 +97,7 @@ function scrollConnectComponent(Component, mapProps, options) {
 			console.log('rendera', this.props)
 			return (
 				<div ref={this.ref}>
-					<Component {...this.props} {...prop} {...this.state.ioActions} />
+					<Component {...this.props} {...prop} {...this.state.sensorProxy} />
 				</div>
 			);
 		}

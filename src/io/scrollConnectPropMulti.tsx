@@ -8,9 +8,9 @@ import { ScrollContextIntersectionObserver } from "./ScrollSense";
  * @param {React.Component} Component Component to connect
  * @param {{root, threshold, rootMargin}} options Parameters to intersection observer
  */
-function scrollConnectPropMulti(Component, options) {
+function scrollConnectPropMulti(Component: React.ComponentType<any>, options: ConnectOptionsType) {
 
-	class ScrollConnectedMulti extends React.Component {
+	class ScrollConnectedMulti extends React.Component<ScrollConnectedPropType, ScrollConnectedStateType> {
 		static contextType = ScrollContextIntersectionObserver;
 		isComplete = false;
 		isRafAvailable = isRafAvailable();
@@ -42,7 +42,11 @@ function scrollConnectPropMulti(Component, options) {
 			}
 		}
 
-		onIntersection(el, fn, options) {
+		onIntersection(
+			el: HTMLElement,
+			fn: (ScrollSensorEvent, HTMLElement, number?) => void, 
+			options: ConnectOptionsType
+		) {
 			if (!this.isComplete) {
 				warn("Component still not mounted. To add an element to the tracking list, element must be mounted");
 				return;
@@ -50,7 +54,7 @@ function scrollConnectPropMulti(Component, options) {
 
 			let isThresholdSet = false, isRootSet = false, isRootMarginSet = false;
 
-			let thisConfig = {...this.config};
+			let thisConfig = { ...this.config };
 
 			if (options && options.threshold) {
 				thisConfig.threshold = options.threshold;
@@ -80,7 +84,7 @@ function scrollConnectPropMulti(Component, options) {
 					}
 				});
 
-				const ioActions = this.context.addToMultipleio(el, (ioEntry) => {
+				const sensorProxy = this.context.addToMultipleio(el, (ioEntry) => {
 
 					ioEntry.forEach((entry) => {
 						if (this.isRafAvailable) {
@@ -102,7 +106,7 @@ function scrollConnectPropMulti(Component, options) {
 					rootMargin: this.config.rootMargin
 				});
 
-				return ioActions;
+				return sensorProxy;
 			}
 			else {
 				warn('ScrollSense: There is no dom element to attach the scroll sense');
@@ -176,7 +180,6 @@ function scrollConnectPropMulti(Component, options) {
 
 		render() {
 
-			info('rendera', this.props)
 			return (
 				<Component {...this.props} onIntersection={this.onIntersection} />
 			);

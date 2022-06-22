@@ -2,18 +2,21 @@ import React from "react";
 import { info, warn } from "../shared/log";
 import { ScrollContextIntersectionObserver } from "./ScrollSense";
 
-function scrollConnectComponentMulti(Component, mapProps, options) {
+function scrollConnectComponentMulti(
+	Component: React.ComponentType<any>,
+	mapProps: (ScrollOptions) => any,
+	options: ConnectOptionsType
+) {
 
-	class ScrollConnectedMulti extends React.Component {
+	class ScrollConnectedMulti extends React.Component<ScrollConnectedPropType, ScrollConnectedStateType> {
 		static contextType = ScrollContextIntersectionObserver;
 		//static root = null;
 		config = null;
 
-		ref = React.createRef();
+		ref = React.createRef<HTMLDivElement>();
 
 		constructor(props) {
 
-			console.log('multi ', props);
 			super(props);
 
 			if (!mapProps) {
@@ -24,24 +27,24 @@ function scrollConnectComponentMulti(Component, mapProps, options) {
 
 			this.state = {
 				scrollInfo: { isIntersecting: false },
-				ioActions: null
+				sensorProxy: null
 			}
 
 			this.config = {
 				threshold: options ? options.threshold || 0.5 : 0.5,
 				root: options?.root,
-				rootMargin: options ? options.rootMargin || '0px': '0px'
+				rootMargin: options ? options.rootMargin || '0px' : '0px'
 			};
 
 			if (this.props.threshold) {
 				this.config.threshold = this.props.threshold;
 			}
-			
+
 			if (this.props.root !== undefined) {
 				this.config.root = this.props.root;
 			}
 
-			if(this.props.rootMargin){
+			if (this.props.rootMargin) {
 				this.config.rootMargin = this.props.rootMargin;
 			}
 		}
@@ -51,7 +54,7 @@ function scrollConnectComponentMulti(Component, mapProps, options) {
 			let targetEl = this.ref.current.children[0];
 			if (targetEl) {
 
-				const ioActions = this.context.addToMultipleio(targetEl, (ioEntry) => {
+				const sensorProxy = this.context.addToMultipleio(targetEl, (ioEntry) => {
 
 					ioEntry.forEach((entry) => {
 						console.log('s', entry);
@@ -69,7 +72,7 @@ function scrollConnectComponentMulti(Component, mapProps, options) {
 				})
 
 				this.setState({
-					ioActions: ioActions
+					sensorProxy: sensorProxy
 				});
 			}
 			else {
@@ -82,7 +85,7 @@ function scrollConnectComponentMulti(Component, mapProps, options) {
 			let targetEl = this.ref.current.children[0];
 			if (targetEl) {
 
-				const ioActions = this.context.updateMultipleio(targetEl, (ioEntry) => {
+				const sensorProxy = this.context.updateMultipleio(targetEl, (ioEntry) => {
 					console.log('root', root);
 					ioEntry.forEach((entry) => {
 						console.log('s', entry);
@@ -134,10 +137,9 @@ function scrollConnectComponentMulti(Component, mapProps, options) {
 			// let prop = this.getProp(this.context);
 			let prop = mapProps(this.state.scrollInfo);
 
-			info('rendera', this.props)
 			return (
 				<div ref={this.ref}>
-					<Component {...this.props} {...prop} {...this.state.ioActions} />
+					<Component {...this.props} {...prop} {...this.state.sensorProxy} />
 				</div>
 			);
 		}

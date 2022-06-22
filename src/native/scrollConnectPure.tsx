@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 
-function scrollConnectPure(Component) {
+function scrollConnectPure(Component: React.ComponentType<any>) {
        class ScrollConnectedPure extends PureComponent {
               
               render() {

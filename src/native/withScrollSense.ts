@@ -1,15 +1,16 @@
 import scrollConnectProp from './scrollConnectProp';
 import scrollConnectComponent from './scrollConnectComponent';
+import React from 'react';
 
-export default function withScrollSense() {
+export default function withScrollSense(Component: React.ComponentType) {
 
        return {
-              useCallback: function (Component, options) {
+              viaCallback: function (options) {
 
                      return scrollConnectProp(Component, options);
 
               },
-              useProps: function (Component, options, mapProps) {
+              viaProps: function (options, mapProps) {
 
                      return scrollConnectComponent(Component, mapProps, options);
 
