@@ -120,6 +120,13 @@ While its up to your imagination and requirements to decide what to do upon dete
 
 Let's say that you need to fade in your components as the user scrolls down. Here is a quick example of how to do that. Here I use intersection observer. You can use the scroll events also.
 
+<iframe src="https://codesandbox.io/embed/fade-in-components-vrxnh8?fontsize=14&hidenavigation=1&theme=dark"
+     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+     title="Fade In Components"
+     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
+   ></iframe>
+
 
 ### 2. Change class on intersection
 

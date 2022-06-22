@@ -24,7 +24,7 @@ npm save react-scrollsense
 
 ## Documentation 
 
-You can access the documentation from [here](https://xpd-kasun.github.io/react-scrollsense).
+You can access the documentation from [here](https://xpd-kasun.github.io/React-ScrollSense/).
 
 ## Information for the maintainers and contributers
 
