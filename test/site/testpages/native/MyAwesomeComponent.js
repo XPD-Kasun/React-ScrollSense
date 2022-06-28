@@ -13,7 +13,7 @@ function MyAwesomeComponent() {
               console.log("new one");
               let tracker = sensor.onIntersection(
                      ref.current,
-                     (entry, el) => {
+                     (entry) => {
                             if (entry.isIntersecting) {
                                    // Now its on screen let's change class
                                    setCls("my-component scrolled");

@@ -2,7 +2,8 @@ import React from "react";
 import { info, warn } from "../shared/log";
 import { isRafAvailable } from "../shared/modernizer";
 import { ScrollContextNativeScroll } from "./ScrollSense";
-
+import { ScrollConnectedCallbackProps, ConnectOptionsType } from '../types';
+ 
 /**
  * 
  * @param {React.Component} Component Component to connect
@@ -10,7 +11,7 @@ import { ScrollContextNativeScroll } from "./ScrollSense";
  */
 function scrollConnectProp(Component: React.ComponentType<any>, options: ConnectOptionsType) {
 
-	class ScrollConnected extends React.Component<ScrollConnectedPropType, ScrollConnectedStateType> {
+	return class extends React.Component<ScrollConnectedCallbackProps, null> {
 		static contextType = ScrollContextNativeScroll;
 		isComplete = false;
 		isRafAvailable = isRafAvailable();
@@ -114,7 +115,6 @@ function scrollConnectProp(Component: React.ComponentType<any>, options: Connect
 		}
 	}
 
-	return ScrollConnected;
 }
 
 export default scrollConnectProp;

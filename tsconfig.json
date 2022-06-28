@@ -10,7 +10,9 @@
               "inlineSources": true,
               "allowJs": true,
               "removeComments": true,
-              "skipLibCheck": true
+              "skipLibCheck": true,
+              "declaration": true,
+              
        },
        "include": [
               "src/**/*"

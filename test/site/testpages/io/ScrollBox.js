@@ -8,8 +8,10 @@ function ScrollBox({ height }) {
 
        useEffect(() => {
 
-              ioActions.onIntersection(scrollBoxRef.current, (ioEntry, el, time) => {
+              ioActions.onIntersection(scrollBoxRef.current, (ioEntry) => {
 
+                     let el = ioEntry.target;
+                     
                      if (ioEntry.isIntersecting) {
                             el.style.backgroundColor = '#00ff00';
                      }

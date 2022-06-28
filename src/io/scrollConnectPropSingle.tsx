@@ -2,10 +2,11 @@ import React from "react";
 import { warn } from "../shared/log";
 import { isRafAvailable } from "../shared/modernizer";
 import { ScrollContextIntersectionObserver } from "./ScrollSense";
+import {ConnectOptionsType, ScrollConnectedCallbackProps } from '../types';
 
 function scrollConnectPropSingle(Component: React.ComponentType<any>) {
 
-	class ScrollConnectedSingle extends React.Component<ScrollConnectedPropType, ScrollConnectedStateType> {
+	return class extends React.Component<ScrollConnectedCallbackProps, null> {
 		static contextType = ScrollContextIntersectionObserver;
 
 		isRafAvailable = isRafAvailable();
@@ -55,7 +56,6 @@ function scrollConnectPropSingle(Component: React.ComponentType<any>) {
 		}
 	}
 
-	return ScrollConnectedSingle;
 }
 
 

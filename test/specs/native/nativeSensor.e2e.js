@@ -151,6 +151,8 @@ describe('Native scroll sensor: ', () => {
                      el.dispatchEvent(evt);
               });
 
+              await delay(100);
+
               className = await getListItem(0).getAttribute('class');
 
               console.log('>> ', className);

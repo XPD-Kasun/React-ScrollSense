@@ -2,6 +2,7 @@ import React from "react";
 import { info, warn } from "../shared/log";
 import { isRafAvailable } from "../shared/modernizer";
 import { ScrollContextIntersectionObserver } from "./ScrollSense";
+import {ConnectOptionsType, ScrollConnectedCallbackProps } from '../types';
 
 /**
  * 
@@ -10,7 +11,7 @@ import { ScrollContextIntersectionObserver } from "./ScrollSense";
  */
 function scrollConnectPropMulti(Component: React.ComponentType<any>, options: ConnectOptionsType) {
 
-	class ScrollConnectedMulti extends React.Component<ScrollConnectedPropType, ScrollConnectedStateType> {
+	return class extends React.Component<ScrollConnectedCallbackProps, null> {
 		static contextType = ScrollContextIntersectionObserver;
 		isComplete = false;
 		isRafAvailable = isRafAvailable();
@@ -86,19 +87,15 @@ function scrollConnectPropMulti(Component: React.ComponentType<any>, options: Co
 
 				const sensorProxy = this.context.addToMultipleio(el, (ioEntry) => {
 
-					ioEntry.forEach((entry) => {
-						if (this.isRafAvailable) {
-							window.requestAnimationFrame((time) => {
-								fn(entry, el, time);
-							})
-							return;
-						}
-						else {
-							fn(entry, el);
-						}
-
-
-					});
+					if (this.isRafAvailable) {
+						window.requestAnimationFrame((time) => {
+							fn(ioEntry, el, time);
+						})
+						return;
+					}
+					else {
+						fn(ioEntry, el);
+					}
 
 				}, {
 					threshold: this.config.threshold,
@@ -124,19 +121,15 @@ function scrollConnectPropMulti(Component: React.ComponentType<any>, options: Co
 
 				this.context.updateMultipleio(ioRecord.el, (ioEntry) => {
 
-					ioEntry.forEach((entry) => {
-						if (this.isRafAvailable) {
-							window.requestAnimationFrame((time) => {
-								ioRecord.fn(entry, ioRecord.el, time);
-							})
-							return;
-						}
-						else {
-							ioRecord.fn(entry, ioRecord.el);
-						}
-
-
-					});
+					if (this.isRafAvailable) {
+						window.requestAnimationFrame((time) => {
+							ioRecord.fn(ioEntry, ioRecord.el, time);
+						})
+						return;
+					}
+					else {
+						ioRecord.fn(ioEntry, ioRecord.el);
+					}
 
 				}, {
 					threshold: ioRecord.flags.isThresholdSet ? ioRecord.config.threshold : (ioRecord.config.threshold = threshold),
@@ -144,8 +137,6 @@ function scrollConnectPropMulti(Component: React.ComponentType<any>, options: Co
 					rootMargin: ioRecord.flags.isRootMarginSet ? ioRecord.config.rootMargin : (ioRecord.config.rootMargin = rootMargin)
 				})
 
-
-				console.log('root', ioRecord);
 
 
 			}
@@ -186,7 +177,6 @@ function scrollConnectPropMulti(Component: React.ComponentType<any>, options: Co
 		}
 	}
 
-	return ScrollConnectedMulti;
 }
 
 export default scrollConnectPropMulti;

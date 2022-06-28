@@ -75,7 +75,22 @@ If you have old class-based components, then you can use these HOCs to connect t
 
 ## Typescript Usage
 
-ScrollSense was originally written using Javascript and then ported to Typescript. Typescript type definition file is exported and you can import it by types.d.ts.
+ScrollSense was originally written using Javascript and then ported to Typescript. You need to have at least TypeScript version 3.1 to start using this library. Versions below 3.1 are not officially supported due to the module resolution features we use. (Specifically typeVersions support in package.json). 
+
+This library contains a dist folder which contains JavaScript and type definitions files (not in root). dist, got 3 folders representing, native, io, and helpers. `native` is the module for scroll events. `io` represents the intersection observer sensor, and `helpers` is an additional module you can optionally include in your project. Native module is specified as the root level index.d.ts.
+
+Make sure you have setup 'Node' moduleResolution in your tsconfig.json.
+
+```json
+{
+       "compilerOptions": {
+              //Rest of your config
+              "moduleResolution": "node"
+       }
+}
+```
+
+All TypeScript d.ts files are auto-generated and included in dist folder. With this setup, you are not required to install any additional type library to add IDE or compilation support. After you install this library, type information should be available.
 
 ## Using requestAnimationFrame API
 
@@ -98,6 +113,8 @@ Let's discuss a few points on choosing one over the other.
 Intersection observer is implemented internally by web browsers. So they perform better. Since they are implemented natively, browsers are optimized and process faster than javascript events. But the downside of this API is, it can't be used for continuous scroll detection. Intersection observer API use `thesholds` to mark cut-off points for intersection detection. Since they are discreet values, you can't achieve a continuous notification flow from an intersection observer.
 
 Scroll event implementation on the other hand, is capable of such continuous detection. But the downside is the performance. These events trigger in large numbers, and if you do some heavy processing inside them, it can make your app render sluggish.
+
+One notable difference between these two is, Intersection observer always calls your call back at least once when you connect your component to the interesection observer, while the Scroll event implementation only triggers the callback when you scroll the screen and when the component gets into the view or gets out from the view after it initially appeared.
 
 Fortunately, you can throttle the scroll events to increase the efficiency of the events. But throttling using a higher delay can lag your scroll animations. For smoother effects, you need to set the delay to a lower value. But again lower value means more events. So you need to try and find a suitable balance for throttling delay.
 

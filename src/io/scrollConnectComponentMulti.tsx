@@ -1,6 +1,7 @@
 import React from "react";
 import { info, warn } from "../shared/log";
 import { ScrollContextIntersectionObserver } from "./ScrollSense";
+import {ConnectOptionsType, ScrollConnectedComponentProps, ScrollConnectedComponentState } from '../types';
 
 function scrollConnectComponentMulti(
 	Component: React.ComponentType<any>,
@@ -8,7 +9,7 @@ function scrollConnectComponentMulti(
 	options: ConnectOptionsType
 ) {
 
-	class ScrollConnectedMulti extends React.Component<ScrollConnectedPropType, ScrollConnectedStateType> {
+	return class extends React.Component<ScrollConnectedComponentProps, ScrollConnectedComponentState> {
 		static contextType = ScrollContextIntersectionObserver;
 		//static root = null;
 		config = null;
@@ -56,13 +57,9 @@ function scrollConnectComponentMulti(
 
 				const sensorProxy = this.context.addToMultipleio(targetEl, (ioEntry) => {
 
-					ioEntry.forEach((entry) => {
-						console.log('s', entry);
-						self.setState({
-							scrollInfo: entry
-						})
-
-					})
+					self.setState({
+						scrollInfo: ioEntry
+					});
 
 
 				}, {
@@ -86,13 +83,9 @@ function scrollConnectComponentMulti(
 			if (targetEl) {
 
 				const sensorProxy = this.context.updateMultipleio(targetEl, (ioEntry) => {
-					console.log('root', root);
-					ioEntry.forEach((entry) => {
-						console.log('s', entry);
-						self.setState({
-							scrollInfo: entry
-						})
-
+					
+					self.setState({
+						scrollInfo: ioEntry
 					})
 
 
@@ -145,7 +138,7 @@ function scrollConnectComponentMulti(
 		}
 	}
 
-	return ScrollConnectedMulti;
 }
 
+export declare class ScrollConnectedMulti {}
 export default scrollConnectComponentMulti;

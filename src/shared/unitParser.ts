@@ -1,3 +1,4 @@
+import { ParsedRootMargin } from "../native/types";
 
 if (!String.prototype.endsWith) {
 	String.prototype.endsWith = function (suffix) {

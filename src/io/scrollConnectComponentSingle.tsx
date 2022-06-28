@@ -1,10 +1,11 @@
 import React from "react";
 import { warn } from "../shared/log";
 import { ScrollContextIntersectionObserver } from "./ScrollSense";
+import {ConnectOptionsType, ScrollConnectedComponentProps, ScrollConnectedComponentState } from '../types';
 
 function scrollConnectComponentSingle(Component: React.ComponentType<any>, mapProps: (ConnectOptionsType) => any) {
 	
-	class ScrollConnectedSingle extends React.Component<ScrollConnectedPropType, ScrollConnectedStateType>  {
+	return class extends React.Component<ScrollConnectedComponentProps, ScrollConnectedComponentState>  {
 		static contextType = ScrollContextIntersectionObserver;
 
 		ref = React.createRef<HTMLDivElement>();
@@ -61,8 +62,6 @@ function scrollConnectComponentSingle(Component: React.ComponentType<any>, mapPr
 			);
 		}
 	}
-
-	return ScrollConnectedSingle;
 }
 
 export default scrollConnectComponentSingle;

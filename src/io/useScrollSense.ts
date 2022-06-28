@@ -1,8 +1,10 @@
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useRef } from 'react';
 import errorStrings from '../shared/errorStrings';
 import { error } from '../shared/log';
 import { isRafAvailable } from '../shared/modernizer';
 import { ScrollContextIntersectionObserver } from './ScrollSense';
+import { ScrollSensorEvent, Tracker } from '../types';
+import { isNumeric } from '../shared/isNumeric';
 
 /**
  * Hooks for scroll sense. These are only running given function wrapped with raf if available.
@@ -10,13 +12,21 @@ import { ScrollContextIntersectionObserver } from './ScrollSense';
 
 const rafAvailable = isRafAvailable();
 
+interface ElToFnMap {
+       [elId: string]: {
+              sensorProxy: Tracker,
+              fn: (evt: ScrollSensorEvent) => any
+       }
+}
+
 function useScrollSense(useMultipleIOs = true) {
 
        const scrollSense = useContext(ScrollContextIntersectionObserver);
-       
-	if(!scrollSense){
-		throw new Error('No intersection observer sensor has found. Did you add ScrollSense provider component?');
-	}
+       const elRef = useRef<ElToFnMap>({});
+
+       if (!scrollSense) {
+              throw new Error('No intersection observer sensor has found. Did you add ScrollSense provider component?');
+       }
        if (scrollSense && scrollSense.sensorType !== 'io') {
               error(errorStrings.ioConnectWithWrongProvider);
        }
@@ -24,11 +34,18 @@ function useScrollSense(useMultipleIOs = true) {
        const sensorEndpoint = useMemo(() => {
 
               return {
-                     onIntersection: (el, fn, options) => {
+                     onIntersection: (el: HTMLElement, fn: (evt: ScrollSensorEvent) => any, options?) => {
 
                             if (!scrollSense) {
                                    error(errorStrings.noScrollProvider);
-                                   return;
+                                   return null;
+                            }
+
+                            let elVal = el.getAttribute('data-scroll-id');
+
+                            if (elRef.current[elVal] && (elRef.current[elVal].fn != fn)) {
+                                   elRef.current[elVal].fn = fn;
+                                   return elRef.current[elVal].sensorProxy;
                             }
 
                             let sensorProxy = null;
@@ -37,38 +54,45 @@ function useScrollSense(useMultipleIOs = true) {
 
                                    sensorProxy = scrollSense.addToMultipleio(el, (ioEntry) => {
 
-                                          ioEntry.forEach((entry) => {
-                                                 if (rafAvailable) {
-                                                        window.requestAnimationFrame((time) => {
-                                                               fn(entry, el, time);
-                                                        })
-                                                        return;
-                                                 }
-                                                 else {
-                                                        fn(entry, el);
-                                                 }
+                                          let targetFn = elRef.current[ioEntry.target.getAttribute('data-scroll-id')].fn;
 
-
-                                          });
+                                          if (rafAvailable) {
+                                                 window.requestAnimationFrame((time) => {
+                                                        targetFn(ioEntry);
+                                                 })
+                                                 return;
+                                          }
+                                          else {
+                                                 targetFn(ioEntry);
+                                          }
 
                                    }, options);
                             }
                             else {
 
-                                   sensorProxy = scrollSense.addToSingleio(el, (scrollInfo) => {
+                                   sensorProxy = scrollSense.addToSingleio(el, (ioEntry) => {
+
+                                          let targetFn = elRef.current[ioEntry.target.getAttribute('data-scroll-id')].fn;
 
                                           if (rafAvailable) {
                                                  window.requestAnimationFrame((time) => {
-                                                        fn(scrollInfo, el, time);
+                                                        targetFn(ioEntry);
                                                  })
                                                  return;
                                           }
                                           else {
-                                                 fn(scrollInfo, el);
+                                                 targetFn(ioEntry);
                                           }
 
                                    }, options);
                             };
+
+                            elVal = el.getAttribute('data-scroll-id');
+                            elRef.current[elVal] = {
+                                   fn,
+                                   sensorProxy
+                            };
+
 
                             return sensorProxy;
                      },

@@ -1,6 +1,7 @@
 import React, { ReactNode } from "react";
 import { warn } from "../shared/log";
 import { ScrollContextNativeScroll } from "./ScrollSense";
+import { ScrollConnectedComponentProps, ScrollConnectedComponentState, ConnectOptionsType } from '../types';
 
 
 function scrollConnectComponent(
@@ -9,7 +10,7 @@ function scrollConnectComponent(
 	options: ConnectOptionsType
 ) {
 
-	class ScrollConnected extends React.Component<ScrollConnectedPropType, ScrollConnectedStateType> {
+	return class extends React.Component<ScrollConnectedComponentProps, ScrollConnectedComponentState> {
 		static contextType = ScrollContextNativeScroll;
 
 		showTrue = {
@@ -26,7 +27,7 @@ function scrollConnectComponent(
 			rootMargin: options ? options.rootMargin || '0px 0px' : '0px 0px'
 		};
 
-		constructor(props: ScrollConnectedPropType) {
+		constructor(props: ScrollConnectedComponentProps) {
 			super(props);
 
 			this.state = {
@@ -102,8 +103,6 @@ function scrollConnectComponent(
 			);
 		}
 	}
-
-	return ScrollConnected;
 }
 
 export default scrollConnectComponent;

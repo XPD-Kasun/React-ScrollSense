@@ -1,60 +1,22 @@
 import { isElement, throttle } from "lodash";
 import React, { DOMElement } from "react";
+import addOrUpdateNativeScrollEntry from "./addOrUpdateNativeScrollEntry";
 import { warn } from "../shared/log";
 import '../shared/polyfills';
 import { getLengthForType, parseDelay, parseRootMargin } from '../shared/unitParser';
-
+import { NativeScrollContext, ParsedNativeConfig, ScrollSenseProps, ScrollSenseState, ScrollEntry } from './types';
+import { Tracker } from '../types';
 
 function isNumeric(n) {
 	return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
-type NativeScrollContext = {
-	addTracking: (el: HTMLElement, fn, options) => SensorProxy,
-	updateTracking: (el: HTMLElement, fn, options) => void,
-	removeTracking: (el: HTMLElement) => void,
-	sensorType: 'native'
-}
-
-
 const ScrollContextNativeScroll = React.createContext<NativeScrollContext>(null);
 ScrollContextNativeScroll.displayName = 'NativeScrollSense';
 
-interface ScrollSenseProps {
-	config: {
-		rootMargin: string
-		delay: string
-	}
-}
-
-interface ScrollSenseState {
-	refreshToggle: boolean
-}
-
-interface ScrollableItem {
-	fn: (ScrollSensorEvent) => void,
-	el: HTMLElement,
-	isShowing: boolean,
-	options: OptionPropType,
-	overflowParent: {
-		el: HTMLElement,
-		xOverflow: boolean,
-		yOverflow: boolean
-	},
-	isActive: boolean,
-	isScrollContainer: boolean,
-	isTriggered: boolean,
-	continuous: boolean
-}
-
-type OptionPropType = {
-	delay?: number,
-	rootMargin: ParsedRootMargin
-};
-
 class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 
-	options: OptionPropType = null;
+	options: ParsedNativeConfig = null;
 
 	setOptions() {
 
@@ -98,7 +60,7 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 	i = 0;
 	wndHeight = 0;
 	wndWidth = 0;
-	scrollEntryItems: ScrollableItem[] = [];
+	scrollEntryItems: ScrollEntry[] = [];
 
 	isOverflow(prop) {
 		return prop == 'auto' || prop == 'scroll';
@@ -146,8 +108,9 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 
 	triggerDocumentScroll = null;
 
-	addTrackingFn(el, fn, options): SensorProxy {
+	addTrackingFn(el, fn, options): Tracker {
 
+		let hasRegisteredItem = false;
 		let trackingOptions: any = {};
 
 		if (options) {
@@ -165,13 +128,12 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 		}
 
 
-		let scrollId = el.getAttribute('data-scroll-id');
-		let self = this;
-		if (isNumeric(scrollId)) {
-			warn("Cannot attach scroller since already exists a handler");
-			return;
+		let scrollId = parseInt(el.getAttribute('data-scroll-id'));
+
+		if (!isNumeric(scrollId)) {
+			el.setAttribute('data-scroll-id', this.i);
+			scrollId = this.i++;
 		}
-		el.setAttribute('data-scroll-id', this.i);
 
 		let overflowParent = this.getOverflowParent(el);
 		if (overflowParent && overflowParent.el) {
@@ -190,9 +152,10 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 
 				overflowParent.el.dispatchEvent(new CustomEvent('scroll'));
 				//Add the container for container detection.
-				let scrollItem = {
+
+				addOrUpdateNativeScrollEntry(scrollId, this.scrollEntryItems, {
 					fn: fn,
-					el: overflowParent.el,					
+					el: overflowParent.el,
 					isShowing: false,
 					options: {
 						rootMargin: trackingOptions.rootMargin ? parseRootMargin(trackingOptions.rootMargin) : this.options.rootMargin
@@ -202,9 +165,10 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 					isScrollContainer: true,
 					isTriggered: false,
 					continuous: trackingOptions.continuous
-				};
-				this.scrollEntryItems[this.i] = scrollItem;
-				this.i++;
+				});
+
+				scrollId = this.i++;
+
 			}
 		}
 		else {
@@ -220,12 +184,13 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 			// this.triggerDocumentScroll();
 		}
 
+
 		let scrollItem = {
 			fn: fn,
 			el: el,
 			isShowing: false,
 			options: {
-				rootMargin: trackingOptions.rootMargin ? parseRootMargin(trackingOptions.rootMargin) : null
+				rootMargin: trackingOptions.rootMargin ? parseRootMargin(trackingOptions.rootMargin) : this.options.rootMargin
 			},
 			overflowParent,
 			isActive: true,
@@ -236,8 +201,7 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 			// scrollLeft: (overflowParent) ? overflowParent.scrollLeft : this.getScrollLeft()
 		};
 
-		this.scrollEntryItems[this.i] = scrollItem;
-		this.i++;
+		addOrUpdateNativeScrollEntry(scrollId, this.scrollEntryItems, scrollItem);
 
 		return {
 
@@ -447,7 +411,7 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 							scrolledHeight: (this.wndHeight - rect.top),
 							scrollTop: target.scrollTop,
 							scrollLeft: target.scrollLeft
-						})
+						});
 						continue;
 					}
 				}

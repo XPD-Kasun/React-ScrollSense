@@ -1,3 +1,4 @@
+import { ScrollSensorEvent } from "../types";
 
 export function getVisibleHeight(sensorEvent: ScrollSensorEvent) : number {
 
