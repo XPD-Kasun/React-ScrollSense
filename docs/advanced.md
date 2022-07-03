@@ -114,6 +114,8 @@ Intersection observer is implemented internally by web browsers. So they perform
 
 Scroll event implementation on the other hand, is capable of such continuous detection. But the downside is the performance. These events trigger in large numbers, and if you do some heavy processing inside them, it can make your app render sluggish.
 
+It's worth noting that the intersection observer triggers an intersection event whenever the element crosses with the viewport. That means when using the intersection observer sensor, CSS based transforms or animations can also trigger intersection events. Sometimes, this could result in unwanted edge cases like element shaking like this one. If your goal is to add movement-based animations or effects, better to use the default scroll event sensor. The scroll event sensor (native sensor) does not trigger intersection events upon CSS transforms or animations. It only triggers events when you scroll the page.
+
 One notable difference between these two is, Intersection observer always calls your call back at least once when you connect your component to the interesection observer, while the Scroll event implementation only triggers the callback when you scroll the screen and when the component gets into the view or gets out from the view after it initially appeared.
 
 Fortunately, you can throttle the scroll events to increase the efficiency of the events. But throttling using a higher delay can lag your scroll animations. For smoother effects, you need to set the delay to a lower value. But again lower value means more events. So you need to try and find a suitable balance for throttling delay.

@@ -28,12 +28,25 @@ To make the sensor available, wrap your contents with the ScrollSense component.
 
 ```js
 
+import ScrollSensor from 'react-scrollsense';
+
+function App() {
+
+     return (
+          <ScrollSensor config={{rootMargin:'10px', delay: '100ms'}}>
+               <MyAwesomeComponent/>
+          </ScrollSensor>
+     )
+}
+
+export default App;
+
 ```
 
 `ScrollSense` takes a configuration object called config with following.
 
 |Property|Description|
-|--------|-----------|
+|:--------|:-----------|
 |delay|Scroll events are throttled for performance reasons. The throttling interval can be set by `delay`.|
 |[`rootMargin`](#roorMargin)|This sets a global offset which will be reduced from your component bounds. This is a string with either pixel or percentage components for top, right, bottom, and left. Examples : <br/></br><ul><li>'10px 20px 30px 10px' means, top offset is 10%. right 20px. bottom 30px and left 10%.</li><li>'0 20px' means top and bottom are 0px while right and left are 20px.</li><li>30 - all directions have 30px.</li>
 
@@ -44,6 +57,43 @@ To make the sensor available, wrap your contents with the ScrollSense component.
 Now you can start adding scroll detection to your components. To do that, you can use the `useScrollSense` hook.
 
 ```js
+import {useScrollSense}  from 'react-scrollsense';
+import {useEffect, useRef} from 'react';
+
+function MyAwesomeComponent() {
+     
+     const sensor = useScrollSense();
+     const ref = useRef();
+     const [cls, setCls] = useState('my-component');
+
+     useEffect(() => {
+
+          let tracker = sensor.onIntersection(ref.current, (entry, el) => {
+
+               if(entry.isIntersecting) {
+                    // Now its on screen let's change class
+                    setCls('my-component scrolled');
+               }
+               else {
+                    // It's off screen
+                    setCls('my-component');
+               }
+
+          });
+
+          return () => { sensor.detach(tracker)}
+
+     }, [sensor]);
+
+     return (
+          <div className={cls} ref={ref}>
+               Hello, Scroll Me!
+          </div>
+     )
+
+}
+
+export default MyAwesomeComponent;
 ```
 
 `useScrollSense` hook returns an object with `onIntersection` and `detach` methods.
@@ -63,7 +113,18 @@ You can use the `detach` method to stop listening to intersection events. Callin
 To use the intersection observer API  sensor you need to import from the `react-scrollsense/io` module. 
 
 ```js
+import ScrollSensor from 'react-scrollsense/io';
 
+function App() {
+
+     return (
+          <ScrollSensor config={{rootMargin: '10px', threshold: '50%'}}>
+               <MyAwesomeComponent/>
+          </ScrollSensor>
+     )
+}
+
+export default App;
 ```
 
 This ScrollSense accepts prop called config, with following
@@ -90,7 +151,47 @@ One way is to use a single observer for all components. This will only create a 
 
 The other way is to use an observer per component. This will create a dedicated observer for each component you connect with the sensor provider.
 
-```js
+```jsx
+import {useScrollSense}  from 'react-scrollsense/io';
+import {useEffect, useRef} from 'react';
+
+function MyAwesomeComponent() {
+     
+     const sensor = useScrollSense();
+     const ref = useRef();
+     const [cls, setCls] = useState('my-component');
+
+     useEffect(() => {
+
+          let tracker = sensor.onIntersection(ref.current, (entry, el) => {
+
+               if(entry.isIntersecting) {
+                    // Now its on screen let's change class
+                    setCls('my-component scrolled');
+               }
+               else {
+                    // It's off screen
+                    setCls('my-component');
+               }
+
+          }, {
+            theshold: 0.2, //override provider threshold,
+            rootMargin: '10px' //override provider root margin.
+          });
+
+          return () => { sensor.detach(tracker)}
+
+     }, [sensor]);
+
+     return (
+          <div className={cls} ref={ref}>
+               Hello, Scroll Me!
+          </div>
+     )
+
+}
+
+export default MyAwesomeComponent;
 
 ```
 
@@ -109,8 +210,6 @@ Make sure when you call this returned `onIntersection` method, it is supplied wi
 Use the `detach` method to unsubscribe from the sensor. You can use the return function of the `useEffect` hook to unsubscribe when the component gets unmounted. 
 
 
-```js
-```
 
 ## Examples
 
@@ -118,7 +217,9 @@ While its up to your imagination and requirements to decide what to do upon dete
 
 ### 1. Adding fade-in effect
 
-Let's say that you need to fade in your components as the user scrolls down. Here is a quick example of how to do that. Here I use intersection observer. You can use the scroll events also.
+Let's say that you need to fade in your components as the user scrolls down. Here is a quick example of how to do that. Here I use scroll events. 
+
+Since here we are using translate transform to move the lines vertically, it's better to avoid the io-based sensor (or detach after the first intersection). As pointed out in [IO VS Scroll events](./advanced.md#intersection-observer-vs-scroll-events) section, if you do repeated translate transforms or animations, it's better to use the default sensor instead of the intersection observer-based sensor.
 
 <iframe src="https://codesandbox.io/embed/fade-in-components-vrxnh8?fontsize=14&hidenavigation=1&theme=dark"
      style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
