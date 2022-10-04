@@ -38,8 +38,8 @@ export default {
 	output: [
 		{
 			dir: 'dist',
-			format: 'es',
-			//sourcemap: true,
+			format: 'cjs',
+			sourcemap: true,
 			plugins: [terser()],
 			chunkFileNames: (chunkInfo) => {
 				console.log(chunkInfo.name)

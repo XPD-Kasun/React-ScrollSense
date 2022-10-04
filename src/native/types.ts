@@ -1,4 +1,4 @@
-import { Tracker } from "../types"
+import { ReactChildren, Tracker } from "../types"
 
 export type NativeScrollContext = {
 	addTracking: (el: HTMLElement, fn, options) => Tracker,
@@ -8,7 +8,8 @@ export type NativeScrollContext = {
 }
 
 export interface ScrollSenseProps {
-	config: {
+	children?: ReactChildren,
+	config?: {
 		rootMargin?: string | null
 		delay?: string | number
 	}

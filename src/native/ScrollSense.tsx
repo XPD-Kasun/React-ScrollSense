@@ -229,8 +229,11 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 
 	updateTrackingFn(el, fn, options) {
 
-		for (let i = 0; i < this.scrollEntryItems.length; i++) {
-			const item = this.scrollEntryItems[i];
+		let keys = Object.keys(this.scrollEntryItems);
+
+		for (let i = 0; i < keys.length; i++) {
+			let key = keys[i];
+			const item = this.scrollEntryItems[key];
 			if (item.el == el) {
 
 				if (fn) {
@@ -251,8 +254,13 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 
 		if (isElement(el)) {
 
-			for (let i = 0; i < this.scrollEntryItems.length; i++) {
-				const scrollItem = this.scrollEntryItems[i];
+			let keys = Object.keys(this.scrollEntryItems);
+
+			for (let i = 0; i < keys.length; i++) {
+				
+				let key = keys[i];
+
+				const scrollItem = this.scrollEntryItems[key];
 				if (scrollItem.el == el) {
 
 					this.scrollEntryItems.splice(i, 1);

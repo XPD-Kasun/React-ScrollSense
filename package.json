@@ -1,6 +1,6 @@
 {
     "name": "react-scrollsense",
-    "version": "1.0.4-alpha.3",
+    "version": "1.0.4-alpha.5",
     "description": "A lightweight scroll sensor to solve your react scroll into viewport issues. ",
     "main": "dist/index.js",
     "exports": {

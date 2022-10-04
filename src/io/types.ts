@@ -1,4 +1,4 @@
-import { Tracker } from '../types';
+import { ReactChildren, Tracker } from '../types';
 
 export type IOScrollContext = {
 	addToSingleio: (el, fn, options) => Tracker,
@@ -9,6 +9,7 @@ export type IOScrollContext = {
 }
 
 export type ScrollSenseProps = {
+	children?: ReactChildren,
 	config?: {
 		threshold?: number,
 		root?: HTMLElement,

@@ -1,3 +1,7 @@
+import React, { ReactChild, ReactFragment, ReactPortal } from "react";
+
+export type ReactChildren = JSX.Element[] | JSX.Element | ReactChild | ReactFragment | ReactPortal | boolean | null | undefined;
+ 
 export interface ScrollSensorEvent {
 
        isIntersecting: boolean,
