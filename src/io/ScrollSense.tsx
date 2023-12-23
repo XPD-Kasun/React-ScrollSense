@@ -13,7 +13,7 @@ ScrollContextIntersectionObserver.displayName = 'ScrollSenseIO';
 
 const thresholdSetToValues = function (threshold) {
 
-	if(!threshold) {
+	if(threshold == null || typeof threshold == 'undefined') {
 		return 0.5;
 	}
 
@@ -32,7 +32,7 @@ const thresholdSetToValues = function (threshold) {
 		let index = -1;
 		if ((index = threahold.indexOf('%')) > -1) {
 			let val = threahold.substr(0, index);
-			val = parseInt(val);
+			val = parseFloat(val);
 			val /= 100;
 			return val;
 		}
@@ -279,7 +279,7 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 
 		if (!this.io) {
 			this.io = new IntersectionObserver(this.onContentVisible.bind(this), {
-				threshold: this.props.config ? (thresholdSetToValues(this.props.config.threshold) || 0.5) : 0.5,
+				threshold: this.props.config ? (thresholdSetToValues(this.props.config.threshold)) : 0.5,
 				root: this.props.config?.root,
 				rootMargin: this.props.config ? (this.props.config.rootMargin || '0px') : '0px'
 			});

@@ -141,8 +141,10 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 			overflowParent.el.addEventListener('scroll', this.onScroll);
 
 			let isContainerAdded = false;
-			for (let i = 0; i < this.scrollEntryItems.length; i++) {
-				const item = this.scrollEntryItems[i];
+			let keys = Object.keys(this.scrollEntryItems);
+			for (let i = 0; i < keys.length; i++) {
+				const key = keys[i];
+				const item = this.scrollEntryItems[key];
 				if (item.el == overflowParent.el) {
 					isContainerAdded = true;
 				}
@@ -339,7 +341,15 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 						wndWidth: this.wndWidth,
 						wndHeight: this.wndHeight,
 						scrollTop: document.scrollingElement.scrollTop,
-						scrollLeft: document.scrollingElement.scrollLeft
+						scrollLeft: document.scrollingElement.scrollLeft,
+						get intersectionInPixels(){
+							return {
+								x: this.scrollLeft,
+								y: this.scrollTop,
+								width: 34,
+								height: 34
+							}
+						}
 					})
 
 				}
@@ -362,8 +372,12 @@ class ScrollSense extends React.Component<ScrollSenseProps, ScrollSenseState> {
 			let target = evt.target;
 			let scrollRect = target.getBoundingClientRect();
 
-			for (let i = 0; i < this.scrollEntryItems.length; i++) {
-				const item = this.scrollEntryItems[i];
+			let keys = Object.keys(this.scrollEntryItems);
+
+			for (let i = 0; i < keys.length; i++) {
+
+				const key = keys[i];
+				const item = this.scrollEntryItems[key];
 
 				if (!item.continuous && item.isTriggered) {
 					continue;

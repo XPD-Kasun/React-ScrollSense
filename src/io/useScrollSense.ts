@@ -19,7 +19,7 @@ interface ElToFnMap {
        }
 }
 
-function useScrollSense(useMultipleIOs = true) {
+function useScrollSense(useMultipleIOs = false) {
 
        const scrollSense = useContext(ScrollContextIntersectionObserver);
        const elRef = useRef<ElToFnMap>({});

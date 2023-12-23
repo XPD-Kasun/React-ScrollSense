@@ -61,7 +61,7 @@ export function getLengthForType(type: string, marginValue: number, rootLength: 
 		return marginValue;
 	}
 	else {
-		return marginValue * rootLength /100;
+		return marginValue * rootLength;
 	}
 	
 }
